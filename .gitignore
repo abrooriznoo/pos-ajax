@@ -1,5 +1,5 @@
 # Ignore the following files
-Database/connections.php
-Database/koneksi.php
+# Database/connections.php
+# Database/koneksi.php
 Database/testDB.php
 
