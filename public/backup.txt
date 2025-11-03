@@ -1,0 +1,165 @@
+SELECT * FROMprodukINNERJOINkategoriONproduk.kategori_id=kategori.idORDERBYproduk_name;
+
+-- Select Produk
+<select class="form-select text-center bg-primary text-white" name="produk" id="produk">
+                        <option value="">Select Product</option>
+                        <?php
+                        $stmt = db()->prepare("SELECT * FROM produk ORDER BY produk_name");
+                        $stmt->execute();
+                        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                            echo "<option value='" . $row['id'] . "'>" . $row['produk_name'] . "</option>";
+                        }
+                        $stmt->closeCursor();
+                        ?>
+                    </select>
+
+    $(function (){
+    // let triggerButton = null;
+    // document.querySelectorAll('[data-bs-target="#modalWindow"]').forEach(btn => {})
+  
+    $('[data-bs-target="#modalWindow"]').on('click', function(){
+        // triggerButton = $(this);  
+        const btnId = $(this).attr("id") ;
+   
+
+    // $('#modalWindow').on('shown.bs.modal', function(){
+        const modal = $('#modalWindow');
+        const modalTitle = $(modal).find(".modal-header h4");
+        
+        console.log('btnId', btnId)
+        switch (btnId) {
+            case "btn-addProduct":
+                modalTitle.text("Add New Product");
+                break;
+            case "btn-editProduct":
+                modalTitle.text("Edit Product");
+                break;
+            case "btn-deleteProduct":
+                modalTitle.text("Delete Product");
+                break;
+            default:
+                break;
+        }
+    });
+ });
+
+ $(function(){
+  let trigerButton = null;
+//  document.querySelectorAll('[data-bs-target="modalWindow"]').forEach(btn=>{}) - di Javascript
+  $('[data-bs-target="#modalWindow"]').on('click', function(){
+    trigerButton=$(this);
+  });
+
+  $('#modalWindow').on('shown.bs.modal', function(){
+    const modal = $(this);
+    const modalTitle = modal.find(".modal-header h4");
+    const btnId = $(trigerButton).attr("id");
+    console.log('btnId', btnId);
+
+    switch (btnId){
+      case "btn-addProduct":
+        modalTitle.text("Add New Product");
+        break;
+      case "btn-editProduct":
+        modalTitle.text("Edit Product"); 
+        break;
+      case "btn-deleteProduct": 
+        modalTitle.text("Delete Product"); 
+        break;
+      default:
+        break;  
+    }
+
+  });
+
+})
+
+<select name="produk_name" id="produk_name">
+    <option value="">Select Product</option>
+    <?php
+    $stmt = db()->prepare("SELECT * FROM produk ORDER BY produk_name");
+    $stmt->execute();
+    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+        echo "<option value='" . $row['id'] . "'>" . $row['produk_name'] . "</option>";
+        }
+   $stmt->closeCursor();
+   ?>
+</select>
+
+function crudAjaxProduct(action, categoryId, produkId, produkName, produkUom) {
+    // const formData = $('#formProduct').serialize();
+    $.ajax({
+        url: base_URL + "../public/module/crud/crudProduct.php",
+        type: "POST",
+        dataType: "json",
+        data: {
+            action: action,
+            category: categoryId,
+            produk: produkId,
+            produkName: produkName,
+            produkUom: produkUom,
+        }
+    })
+        .done(function (response) {
+            if (response.success) {
+                if (action === 'create') {
+                    addRowToTable(response.data); // tambah baris baru
+                } else if (action === 'update') {
+                    updateRowInTable(response.data); // perbarui baris
+                } else if (action === 'delete') {
+                    removeRowFromTable(response.data.product_id); // hapus baris
+                }
+                resetForm();
+            } else {
+                alert('Gagal: ' + response.message);
+            }
+        })
+    }
+
+<!-- <input hidden name="product_id" id="product_id" >
+<div class="mb-3">
+    <label for="produk_name" class="col-form-label">Product:</label>
+    <input type="text" class="form-control" name="produk_name" id="produk_name">
+</div>
+<div class="mb-3">
+    <label for="produk_uom" class="col-form-label">UOM:</label>
+    <input type="text" class="form-control" name="produk_uom" id="produk_uom">
+</div> -->
+
+"SELECT produk.*, kategori.kategori_name FROM produk LEFT JOIN kategori ON produk.kategori_id = kategori.id ORDER BY produk_name;";
+"SELECT * FROM produk ORDER BY produk_uom"
+
+<select name="kategori_name" id="kategori_name">
+    <option value="">Select Kategori</option>
+    <?php
+    $stmt = db()->prepare("SELECT id, kategori_name FROM kategori ORDER BY kategori_name");
+    $stmt->execute();
+    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+        echo "<option value='" . $row['id'] . "'>" . $row['kategori_name'] . "</option>";
+    }
+    $stmt->closeCursor();
+    ?>
+</select>
+
+'<tr class="hoverable" data-id="' . $row['id'] . '" data-produk="' . $row['produk_name'] . '" data-uom="' . $row['uom_id'] . "' data-category='" . $row['kategori_id'] . '">';
+
+// document.getElementById("produk").addEventListener("click", function () {
+//     crudAjaxProduct("create", this.value);
+// });
+
+// function crudPostProduct(action, produkName, produkUom){
+//     let data = {
+//         action: action,
+//         produk: produkId,
+//         produkName: produkName,
+//         produkUom: produkUom
+//     }
+//     $.post(base_URL +"/public/module/crud/crudProduct.php", data, function (action, produkId, produkName, produkUom){
+//         console.log(data);
+//         console.log(action, produkId, produkName, produkUom)
+//     })
+// }
+
+// document.getElementById("kategori").addEventListener("click", function () {
+//     crudAjaxProduct("create", this.value);
+// });
